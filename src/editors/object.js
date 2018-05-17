@@ -62,12 +62,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     // Sort editors by propertyOrder
     this.property_order = Object.keys(this.editors);
     this.property_order = this.property_order.sort(function(a,b) {
-      var ordera = self.editors[a].schema.propertyOrder;
-      var orderb = self.editors[b].schema.propertyOrder;
-      if(typeof ordera !== "number") ordera = 1000;
-      if(typeof orderb !== "number") orderb = 1000;
-
-      return ordera - orderb;
+      return self.propertyOrderComparator(a,b);
     });
 
     var container;
@@ -270,12 +265,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     // Sort editors by propertyOrder
     this.property_order = Object.keys(this.editors);
     this.property_order = this.property_order.sort(function(a,b) {
-      var ordera = self.editors[a].schema.propertyOrder;
-      var orderb = self.editors[b].schema.propertyOrder;
-      if(typeof ordera !== "number") ordera = 1000;
-      if(typeof orderb !== "number") orderb = 1000;
-
-      return ordera - orderb;
+      return self.propertyOrderComparator(a,b);
     });
   },
   build: function() {
@@ -546,6 +536,11 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     for (var i = 0; i < container.childNodes.length; i++) {
       var child = container.childNodes[i];
       if (control.propertyOrder < child.propertyOrder) {
+        this.addproperty_list.insertBefore(control, child);
+        control = null;
+        break;
+      }
+      else if(this.options.alphabetical_properties && control.propertyOrder == child.propertyOrder && control.textContent.localeCompare(child.textContent) < 0) {
         this.addproperty_list.insertBefore(control, child);
         control = null;
         break;
@@ -898,5 +893,14 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     $each(this.editors, function(i,editor) {
       editor.showValidationErrors(other_errors);
     });
+  },
+  propertyOrderComparator: function(a,b) {
+    var ordera = this.editors[a].schema.propertyOrder;
+    var orderb = this.editors[b].schema.propertyOrder;
+    if(typeof ordera !== "number") ordera = 1000;
+    if(typeof orderb !== "number") orderb = 1000;
+    if(this.options.alphabetical_properties && ordera == orderb)
+      return a.localeCompare(b);
+    return ordera - orderb;
   }
 });
