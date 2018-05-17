@@ -337,6 +337,11 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
       // Manage Properties modal
       this.addproperty_holder = this.theme.getModal();
+      this.addproperty_holder.closeListener = function(e) {
+        if(self.addproperty_holder.contains(e.target))
+          return;
+        self.hideAddProperty();
+      };
       this.addproperty_list = document.createElement('div');
       this.addproperty_list.style.width = '295px';
       this.addproperty_list.style.maxHeight = '160px';
@@ -601,6 +606,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     this.addproperty_button.disabled = false;
     this.addproperty_holder.style.display = '';
     this.refreshAddProperties();
+    document.addEventListener("click", this.addproperty_holder.closeListener);
   },
   hideAddProperty: function() {
     if(!this.addproperty_holder) return;
@@ -610,6 +616,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     this.enable();
 
     this.adding_property = false;
+    document.removeEventListener("click", this.addproperty_holder.closeListener);
   },
   toggleAddProperty: function() {
     if(this.adding_property) this.hideAddProperty();
