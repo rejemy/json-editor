@@ -470,7 +470,7 @@ The variable `self` is always available.  Look at the __Dependencies__ section b
 
 There is no way to specify property ordering in JSON Schema (although this may change in v5 of the spec).
 
-JSON Editor introduces a new keyword `propertyOrder` for this purpose.  The default property order if unspecified is 1000.  Properties with the same order will use normal JSON key ordering.
+JSON Editor introduces the option `propertyOrder` for this purpose.  The default property order if unspecified is 1000.  Properties with the same propertyOrder will be displayed in the order they are listed in the schema, unless alphabetical_properties is set, in which case the are ordered by their property names (useful for objects with many additional properties).
 
 ```json
 {
